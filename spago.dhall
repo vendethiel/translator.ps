@@ -17,13 +17,16 @@ to generate this file without the comments in this block.
   , "affjax-web"
   , "arrays"
   , "assert"
+  , "bifunctors"
   , "console"
   , "effect"
+  , "either"
   , "foldable-traversable"
   , "halogen"
   , "lists"
   , "maybe"
   , "prelude"
+  , "simple-json"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
