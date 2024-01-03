@@ -23,10 +23,17 @@ to generate this file without the comments in this block.
   , "either"
   , "foldable-traversable"
   , "halogen"
+  , "halogen-hooks"
+  , "halogen-router"
   , "lists"
   , "maybe"
+  , "newtype"
   , "prelude"
+  , "profunctor-lenses"
+  , "routing"
+  , "routing-duplex"
   , "simple-json"
+  , "tuples"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

@@ -1,13 +1,15 @@
 module Component.ProjectList (projectList) where
 
 import Prelude
+
 import Data.Array (length)
+import Data.Either (either)
 import Data.Maybe (Maybe(..))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
+
 import API.Project (Project, getProjects)
-import Data.Either (either)
 
 type Input = Unit
 type Output = Unit

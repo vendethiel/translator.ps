@@ -103,3 +103,26 @@ let upstream =
         sha256:f61b8e3181e85976f495fd7c023506551914bc733f0b26cb209bc67e3c4f4024
 
 in  upstream
+  with halogen-router =
+    { dependencies =
+      [ "aff"
+      , "effect"
+      , "either"
+      , "foreign"
+      , "halogen"
+      , "halogen-hooks"
+      , "halogen-store"
+      , "halogen-subscriptions"
+      , "maybe"
+      , "prelude"
+      , "routing"
+      , "routing-duplex"
+      , "safe-coerce"
+      , "transformers"
+      , "tuples"
+      ]
+    , repo =
+       "https://github.com/katsujukou/purescript-halogen-router"
+    , version =
+        "main"
+    }
