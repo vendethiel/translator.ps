@@ -15,8 +15,10 @@ import Type.Proxy (Proxy(..))
 
 import Route (AppRoute(..))
 import Component.ProjectList (projectList)
+import Component.ProjectPage (projectPage)
 
 _projectList = Proxy :: Proxy "projectList"
+_projectPage = Proxy :: Proxy "projectPage"
 
 root :: forall q i o m
       . MonadRouter AppRoute m
@@ -36,4 +38,4 @@ root = Hooks.component \_ _ -> Hooks.do
   routerView = case _ of
     Nothing -> HH.text "404"
     Just ProjectListPage -> HH.slot_ _projectList unit projectList unit
-    Just _ -> HH.text "TODO"
+    Just (ProjectPage id) -> HH.slot_ _projectPage unit projectPage id

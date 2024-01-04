@@ -34,6 +34,8 @@ to generate this file without the comments in this block.
   , "routing-duplex"
   , "simple-json"
   , "tuples"
+  , "web-events"
+  , "web-uievents"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

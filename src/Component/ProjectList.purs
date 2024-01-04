@@ -2,22 +2,30 @@ module Component.ProjectList (projectList) where
 
 import Prelude
 
-import Data.Array (length)
+import API.Project (Project, ProjectId, getProjects)
+import Component.ProjectLabel (projectLabel)
 import Data.Either (either)
 import Data.Maybe (Maybe(..))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
-
-import API.Project (Project, getProjects)
+import Halogen.Router.Class (class MonadRouter)
+import Route (AppRoute)
+import Type.Proxy (Proxy(..))
 
 type Input = Unit
 type Output = Unit
 data State = Loading | APIError String | Data (Array Project)
 type Query = Unit
 data Action = Initialize
+type Slots = (projectLabel :: forall query. H.Slot query Void ProjectId)
+_projectLabel = Proxy :: Proxy "projectLabel"
 
-projectList :: forall query m. MonadAff m => H.Component query Input Output m
+projectList
+  :: forall query m
+   . MonadRouter AppRoute m
+  => MonadAff m
+  => H.Component query Input Output m
 projectList =
   H.mkComponent
     { initialState
@@ -29,15 +37,17 @@ projectList =
 initialState :: Input -> State
 initialState _ = Loading
 
-render :: forall m. State -> H.ComponentHTML Action () m
+render :: forall m. MonadRouter AppRoute m => State -> H.ComponentHTML Action Slots m
 render state =
-  HH.div_
-    [ case state of
-      Loading -> HH.text "Loading..."
-      APIError e -> HH.text $ "API Error while fetching projects: " <> e
-      Data xs -> HH.text $ "Got " <> show (length xs) <> " project(s)" ]
+  HH.div_ $
+    case state of
+      Loading -> [ HH.text "Loading..." ]
+      APIError e -> [ HH.text $ "API Error while fetching projects: " <> e ]
+      Data xs ->
+        [ HH.ul_ $ flip map xs \p ->
+          HH.li_ [ HH.slot_ _projectLabel p.id projectLabel p ] ]
 
-handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action () Output m Unit
+handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action Slots Output m Unit
 handleAction = case _ of
   Initialize -> do
     projects <- H.liftAff getProjects
