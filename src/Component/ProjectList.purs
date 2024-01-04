@@ -16,7 +16,6 @@ import Type.Proxy (Proxy(..))
 type Input = Unit
 type Output = Unit
 data State = Loading | APIError String | Data (Array Project)
-type Query = Unit
 data Action = Initialize
 type Slots = (projectLabel :: forall query. H.Slot query Void ProjectId)
 _projectLabel = Proxy :: Proxy "projectLabel"

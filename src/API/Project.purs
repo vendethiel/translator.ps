@@ -1,11 +1,13 @@
-module API.Project (ProjectId(..), Project, getProjects) where
+module API.Project (ProjectId(..), Project, getProjects, findProject) where
 
 import Prelude
 
 import Affjax.ResponseFormat as AXRF
 import Affjax.Web as AX
+import Data.Array (find)
 import Data.Bifunctor (bimap)
-import Data.Either (Either)
+import Data.Either (Either, fromRight)
+import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype)
 import Effect.Aff (Aff)
 import Simple.JSON (class ReadForeign, readJSON)
@@ -32,3 +34,8 @@ getProjects :: Aff (Either String (Array Project))
 getProjects = do
   res <- AX.get AXRF.string apiProjectsURL
   pure $ mapL show <<< readJSON <<< _.body =<< mapL AX.printError res
+
+findProject :: ProjectId -> Aff (Maybe Project)
+findProject id = do
+  projects <- getProjects
+  pure $ find (\p -> p.id == id) $ fromRight [] projects
