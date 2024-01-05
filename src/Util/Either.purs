@@ -10,4 +10,4 @@ mapL :: forall a b c. (a -> b) -> Either a c -> Either b c
 mapL f = bimap f identity
 
 fromEitherMaybe :: forall l r. l -> Either l (Maybe r) -> Either l r
-fromEitherMaybe = (join <<< _) <<< map <<< note
+fromEitherMaybe = (=<<) <<< note
