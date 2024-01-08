@@ -4,13 +4,12 @@ import Prelude
 
 import Affjax.ResponseFormat as AXRF
 import Affjax.Web as AX
-import Data.Array (find)
 import Data.Either (Either)
 import Data.Newtype (class Newtype)
 import Effect.Aff (Aff)
-import Simple.JSON (class ReadForeign, readJSON)
+import Simple.JSON (class ReadForeign)
 
-import Util.Either (mapL, fromEitherMaybe)
+import Util.Parse (affErr)
 
 newtype ProjectId = ProjectId Int
 derive instance Newtype ProjectId _
@@ -24,14 +23,13 @@ type Project =
   , name :: String }
 
 apiProjectsURL :: String
-apiProjectsURL = "https://gist.githubusercontent.com/vendethiel/f763232225ce3109a2202e2ae0e261a6/raw/0adf9f40f22d838253d416205e610b65e1b948d7/projects.json"
+apiProjectsURL = "http://localhost:8080/projects"
+
+apiProjectURL :: ProjectId -> String
+apiProjectURL id = "http://localhost:8080/projects/" <> show id
 
 getProjects :: Aff (Either String (Array Project))
-getProjects = do
-  res <- AX.get AXRF.string apiProjectsURL
-  pure $ mapL show <<< readJSON <<< _.body =<< mapL AX.printError res
+getProjects = affErr <$> AX.get AXRF.string apiProjectsURL
 
 findProject :: ProjectId -> Aff (Either String Project)
-findProject id = do
-  projects <- getProjects
-  pure $ fromEitherMaybe "Not Found" $ map (find $ \p -> p.id == id) projects
+findProject id = affErr <$> AX.get AXRF.string (apiProjectURL id)
