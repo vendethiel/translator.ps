@@ -36,7 +36,7 @@ projectPage = Hooks.component \_ projectId -> Hooks.do
       Nothing -> HH.h1_ [ HH.text $ "Loading Project #" <> show projectId ]
       Just (Left err) -> HH.h1_
         [ HH.text $ "Error loading project #" <> show projectId <> ": " <> err ]
-      Just (Right (project /\ tasks)) -> HH.h1_ $
-        [ HH.text project.name ]
+      Just (Right (project /\ tasks)) -> HH.div_ $
+        [ HH.h1_ [ HH.text project.name ] ]
         <> flip map tasks \task ->
           HH.slot_ _taskItem task.id taskItem task
