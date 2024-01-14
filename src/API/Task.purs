@@ -46,7 +46,7 @@ instance ReadForeign Translations where
 type Task =
   { id :: TaskId
   , projectId :: ProjectId
-  , key :: String
+  , name :: String
   , translations :: Translations }
 
 apiTasksURL :: ProjectId -> String
