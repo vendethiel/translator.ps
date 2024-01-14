@@ -33,6 +33,7 @@ to generate this file without the comments in this block.
   , "routing-duplex"
   , "simple-json"
   , "tuples"
+  , "unfoldable"
   , "web-events"
   , "web-uievents"
   ]

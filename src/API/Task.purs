@@ -4,6 +4,7 @@ module API.Task
   , Translations(..)
   , LangCode(..)
   , getProjectTasks
+  , toUnfoldable
   ) where
 
 import Prelude
@@ -14,6 +15,8 @@ import Data.Either (Either)
 import Data.Map as Map
 import Data.Newtype (class Newtype)
 import Data.Traversable (for)
+import Data.Tuple (Tuple)
+import Data.Unfoldable (class Unfoldable)
 import Data.Tuple.Nested ((/\))
 import Effect.Aff (Aff)
 import Foreign (ForeignError(..), fail)
@@ -37,6 +40,9 @@ derive newtype instance ReadForeign LangCode
 
 newtype Translations = Translations (Map.Map LangCode String)
 derive instance Newtype Translations _
+
+toUnfoldable :: forall f k v. Unfoldable f => Translations -> f (Tuple LangCode String)
+toUnfoldable (Translations m) = Map.toUnfoldable m
 
 instance ReadForeign Translations where
   readImpl json = do
