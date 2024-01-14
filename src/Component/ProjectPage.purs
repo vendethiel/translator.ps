@@ -10,10 +10,14 @@ import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.Hooks as Hooks
+import Type.Proxy (Proxy(..))
 
 import API.Project (ProjectId, findProject)
 import API.Task (getProjectTasks)
+import Component.TaskItem (taskItem)
 -- TODO https://github.com/JordanMartinez/purescript-halogen-hooks-extra
+
+_taskItem = Proxy :: Proxy "taskItem"
 
 projectPage
   :: forall q o m
@@ -32,4 +36,7 @@ projectPage = Hooks.component \_ projectId -> Hooks.do
       Nothing -> HH.h1_ [ HH.text $ "Loading Project #" <> show projectId ]
       Just (Left err) -> HH.h1_
         [ HH.text $ "Error loading project #" <> show projectId <> ": " <> err ]
-      Just (Right (project /\ _)) -> HH.h1_ [ HH.text project.name ]
+      Just (Right (project /\ tasks)) -> HH.h1_ $
+        [ HH.text project.name ]
+        <> flip map tasks \task ->
+          HH.slot_ _taskItem task.id taskItem task
