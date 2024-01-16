@@ -35,13 +35,14 @@ newtype LangCode = LangCode String
 derive instance Newtype LangCode _
 derive newtype instance Eq LangCode
 derive newtype instance Ord LangCode
-derive newtype instance Show LangCode
 derive newtype instance ReadForeign LangCode
+instance Show LangCode where
+  show (LangCode lc) = lc
 
 newtype Translations = Translations (Map.Map LangCode String)
 derive instance Newtype Translations _
 
-toUnfoldable :: forall f k v. Unfoldable f => Translations -> f (Tuple LangCode String)
+toUnfoldable :: forall f. Unfoldable f => Translations -> f (Tuple LangCode String)
 toUnfoldable (Translations m) = Map.toUnfoldable m
 
 instance ReadForeign Translations where
