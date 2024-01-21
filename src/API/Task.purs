@@ -14,15 +14,15 @@ import Affjax.Web as AX
 import Data.Either (Either)
 import Data.Map as Map
 import Data.Newtype (class Newtype)
-import Data.Traversable (for)
 import Data.Tuple (Tuple)
 import Data.Unfoldable (class Unfoldable)
-import Data.Tuple.Nested ((/\))
 import Effect.Aff (Aff)
-import Foreign (ForeignError(..), fail)
+import Foreign.Object (Object)
 import Simple.JSON (class ReadForeign, readImpl)
+
 import API.Project (ProjectId)
 import Util.Parse (affErr)
+import Util.Map (foldWithIndex)
 
 newtype TaskId = TaskId Int
 derive instance Newtype TaskId _
@@ -47,11 +47,8 @@ toUnfoldable (Translations m) = Map.toUnfoldable m
 
 instance ReadForeign Translations where
   readImpl json = do
-    (o :: Array (Array String)) <- readImpl json
-    kvs <- for o $ case _ of
-      [k, v] -> pure $ LangCode k /\ v
-      _ -> fail $ TypeMismatch "tuple of 2 strings" "an array of more or less than 2 elements"
-    pure $ Translations $ Map.fromFoldable kvs
+    (o :: Object String) <- readImpl json
+    pure $ Translations $ foldWithIndex LangCode o
 
 type Task =
   { id :: TaskId
