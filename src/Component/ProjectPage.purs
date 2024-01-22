@@ -28,7 +28,7 @@ projectPage = Hooks.component \_ projectId -> Hooks.do
 
   Hooks.useLifecycleEffect do
     projectAndTasks <- H.liftAff $ lift2 (/\) <$> findProject projectId <*> getProjectTasks projectId
-    Hooks.modify_ dataStateId \_ -> Just projectAndTasks
+    Hooks.put dataStateId $ Just projectAndTasks
     pure Nothing
 
   Hooks.pure do

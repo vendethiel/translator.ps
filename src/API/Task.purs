@@ -4,6 +4,7 @@ module API.Task
   , Translations(..)
   , LangCode(..)
   , getProjectTasks
+  , findProjectTask
   , toUnfoldable
   ) where
 
@@ -59,5 +60,11 @@ type Task =
 apiTasksURL :: ProjectId -> String
 apiTasksURL projectId = "http://localhost:8080/projects/" <> show projectId <> "/tasks"
 
+apiTaskURL :: ProjectId -> TaskId -> String
+apiTaskURL projectId taskId = "http://localhost:8080/projects/" <> show projectId <> "/tasks/" <> show taskId
+
 getProjectTasks :: ProjectId -> Aff (Either String (Array Task))
 getProjectTasks projectId = affErr <$> AX.get AXRF.string (apiTasksURL projectId)
+
+findProjectTask :: ProjectId -> TaskId -> Aff (Either String Task)
+findProjectTask projectId taskId = affErr <$> AX.get AXRF.string (apiTaskURL projectId taskId)
