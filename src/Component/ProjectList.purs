@@ -18,6 +18,7 @@ type Output = Unit
 data State = Loading | APIError String | Data (Array Project)
 data Action = Initialize
 type Slots = (projectLabel :: forall query. H.Slot query Void ProjectId)
+
 _projectLabel = Proxy :: Proxy "projectLabel"
 
 projectList
