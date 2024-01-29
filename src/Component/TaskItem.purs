@@ -25,9 +25,9 @@ header = HH.thead_
     , HH.th_ [ HH.text "Translation" ]  ] ]
 
 taskItem
-  :: forall q o m
+  :: forall q m
    . MonadAff m
-  => H.Component q Task o m
+  => H.Component q Task Unit m
 taskItem = Hooks.component \_ initialTask -> Hooks.do
   task /\ taskStateId <- Hooks.useState initialTask
   mbEdit /\ editStateId <- Hooks.useState Nothing
