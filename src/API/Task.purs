@@ -5,7 +5,7 @@ module API.Task
   , LangCode(..)
   , getProjectTasks
   , findProjectTask
-  , translate
+  , translateTaskKey
   , toUnfoldable
   ) where
 
@@ -75,5 +75,5 @@ getProjectTasks projectId = affErr <$> AX.get AXRF.string (apiTasksURL projectId
 findProjectTask :: ProjectId -> TaskId -> Aff (Either String Task)
 findProjectTask projectId taskId = affErr <$> AX.get AXRF.string (apiTaskURL projectId taskId)
 
-translate :: ProjectId -> TaskId -> LangCode -> String -> Aff (Either String Unit)
-translate projectId taskId lang value = affErr_ <$> AX.post_ (translateUrl projectId taskId lang) (Just $ AXRB.string value)
+translateTaskKey :: ProjectId -> TaskId -> LangCode -> String -> Aff (Either String Unit)
+translateTaskKey projectId taskId lang value = affErr_ <$> AX.post_ (translateUrl projectId taskId lang) (Just $ AXRB.string value)

@@ -3,7 +3,7 @@ module Component.TaskItem (taskItem) where
 import Prelude
 
 import Effect.Aff.Class (class MonadAff)
-import Data.Either (Either(..))
+import Data.Either (Either(..), either)
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Data.Unfoldable (fromMaybe)
@@ -13,7 +13,7 @@ import Halogen.HTML.Events as HE
 import Halogen.Hooks as Hooks
 import Type.Proxy (Proxy(..))
 
-import API.Task (Task, toUnfoldable, findProjectTask)
+import API.Task (Task, toUnfoldable, findProjectTask, translateTaskKey)
 import Component.TranslationInput as TranslationInput
 
 _translationInput = Proxy :: Proxy "translationInput"
@@ -38,8 +38,9 @@ taskItem = Hooks.component \_ initialTask -> Hooks.do
 
     reloadTask _ = reload task.projectId task.id taskStateId errStateId editStateId
 
-    translate (TranslationInput.Translate _lang _value) = do
-      -- TODO send new
+    translate (TranslationInput.Translate lang value) = do
+      r <- H.liftAff $ translateTaskKey task.projectId task.id lang value
+      either (Hooks.put errStateId <<< Just) (const $ pure unit) r
       Hooks.put editStateId Nothing
       reloadTask unit
       pure unit
