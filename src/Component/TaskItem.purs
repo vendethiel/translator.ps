@@ -42,11 +42,12 @@ taskItem = Hooks.component \_ initialTask -> Hooks.do
       -- TODO send new
       Hooks.put editStateId Nothing
       reloadTask unit
+      pure unit
 
     edit s = HH.slot _translationInput unit TranslationInput.component s translate
 
   Hooks.pure do
-    HH.div [ HE.onClick \_ -> reloadTask unit ] $ join
+    HH.div [] $ join -- [ HE.onClick \_ -> reloadTask unit ]
       [ [ HH.text $ task.name ]
       , edit <$> fromMaybe mbEdit
       , err <$> fromMaybe mbErr

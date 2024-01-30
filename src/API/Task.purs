@@ -5,11 +5,14 @@ module API.Task
   , LangCode(..)
   , getProjectTasks
   , findProjectTask
+  , translate
   , toUnfoldable
   ) where
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
+import Affjax.RequestBody as AXRB
 import Affjax.ResponseFormat as AXRF
 import Affjax.Web as AX
 import Data.Either (Either)
@@ -22,7 +25,7 @@ import Foreign.Object (Object)
 import Simple.JSON (class ReadForeign, readImpl)
 
 import API.Project (ProjectId)
-import Util.Parse (affErr)
+import Util.Parse (affErr, affErr_)
 import Util.Map (foldWithIndex)
 
 newtype TaskId = TaskId Int
@@ -63,8 +66,14 @@ apiTasksURL projectId = "http://localhost:8080/projects/" <> show projectId <> "
 apiTaskURL :: ProjectId -> TaskId -> String
 apiTaskURL projectId taskId = "http://localhost:8080/projects/" <> show projectId <> "/tasks/" <> show taskId
 
+translateUrl :: ProjectId -> TaskId -> LangCode -> String
+translateUrl projectId taskId lang = "http://localhost:8080/projects/" <> show projectId <> "/tasks/" <> show taskId <> "/lang/" <> show lang
+
 getProjectTasks :: ProjectId -> Aff (Either String (Array Task))
 getProjectTasks projectId = affErr <$> AX.get AXRF.string (apiTasksURL projectId)
 
 findProjectTask :: ProjectId -> TaskId -> Aff (Either String Task)
 findProjectTask projectId taskId = affErr <$> AX.get AXRF.string (apiTaskURL projectId taskId)
+
+translate :: ProjectId -> TaskId -> LangCode -> String -> Aff (Either String Unit)
+translate projectId taskId lang value = affErr_ <$> AX.post_ (translateUrl projectId taskId lang) (Just $ AXRB.string value)

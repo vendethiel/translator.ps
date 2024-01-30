@@ -1,4 +1,4 @@
-module Util.Parse (affErr) where
+module Util.Parse (affErr, affErr_) where
 
 import Prelude
 
@@ -14,3 +14,8 @@ affErr
   => Either AX.Error (AX.Response String)
   -> Either String a
 affErr res = mapL show <<< readJSON <<< _.body =<< mapL AX.printError res
+
+affErr_
+  :: Either AX.Error Unit
+  -> Either String Unit
+affErr_ res = mapL AX.printError res
