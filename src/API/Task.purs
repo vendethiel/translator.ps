@@ -75,5 +75,6 @@ getProjectTasks projectId = affErr <$> AX.get AXRF.string (apiTasksURL projectId
 findProjectTask :: ProjectId -> TaskId -> Aff (Either String Task)
 findProjectTask projectId taskId = affErr <$> AX.get AXRF.string (apiTaskURL projectId taskId)
 
+-- TODO return Either String Task
 translateTaskKey :: ProjectId -> TaskId -> LangCode -> String -> Aff (Either String Unit)
 translateTaskKey projectId taskId lang value = affErr_ <$> AX.post_ (translateUrl projectId taskId lang) (Just $ AXRB.string value)
